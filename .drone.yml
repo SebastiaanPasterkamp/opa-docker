@@ -1,0 +1,120 @@
+---
+kind: pipeline
+type: kubernetes
+name: Image Unstable
+
+platform:
+    os: linux
+    arch: arm
+
+trigger:
+  event:
+  - push
+  - tag
+
+steps:
+  - name: build
+    image: docker-registry.pikube.dev:31443/drone-genuinetools-img:latest
+    settings:
+      repo: cromrots/opa
+      tags: unstable
+      cache_from: cromrots/opa:cache
+      cache_to: cromrots/opa:cache
+      password:
+        from_secret: docker_pwd
+      username:
+        from_secret: docker_user
+    resources:
+      requests:
+        cpu: 1500
+        memory: 750MiB
+
+  - name: test
+    image: cromrots/opa:unstable
+    pull: always
+
+---
+kind: pipeline
+type: kubernetes
+name: Image Production
+
+platform:
+    os: linux
+    arch: arm
+
+trigger:
+  event:
+  - tag
+
+depends_on:
+  - Image Unstable
+
+steps:
+  - name: build
+    image: docker-registry.pikube.dev:31443/drone-genuinetools-img:latest
+    settings:
+      repo: cromrots/opa
+      auto_tag: true
+      build_args: GIT_TAG=${DRONE_TAG}
+      cache_from: cromrots/opa:cache
+      cache_to: cromrots/opa:cache
+      password:
+        from_secret: docker_pwd
+      username:
+        from_secret: docker_user
+    resources:
+      requests:
+        cpu: 1500
+        memory: 750MiB
+
+---
+kind: pipeline
+type: kubernetes
+name: Notify Status
+
+clone:
+  disable: true
+
+trigger:
+  status:
+  - success
+  - failure
+
+depends_on:
+- Image Unstable
+- Image Production
+
+platform:
+  os: linux
+  arch: arm
+
+steps:
+  - name: discord notification
+    image: appleboy/drone-discord
+    settings:
+      webhook_id:
+        from_secret: discord_id
+      webhook_token:
+        from_secret: discord_token
+      username: drone.io
+      color: auto
+      message: >
+        <:open-policy-agent:950119352181600286> **{{repo.name}}**
+
+        {{#success build.status}}
+        :white_check_mark: {{build.event}} build {{build.number}} succeeded. Good job.
+        {{else}}
+        :warning: {{build.event}} build {{build.number}} failed. Fix me please.
+        {{/success}}
+
+        {{build.link}}
+
+        **Branch:** {{commit.branch}} {{commit.tag}}
+
+        **Message:** {{commit.message}}
+
+---
+kind: signature
+hmac: 234d901dc2d4d58e51702616dbb196a1ec5cc7cd33b8f947a8a0b9c15acc56a3
+
+...

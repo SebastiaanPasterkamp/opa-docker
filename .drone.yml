@@ -16,10 +16,10 @@ steps:
   - name: build
     image: docker-registry.pikube.dev:31443/drone-genuinetools-img:latest
     settings:
-      repo: cromrots/opa
+      repo: docker.io/cromrots/opa
       tags: unstable
-      cache_from: cromrots/opa:cache
-      cache_to: cromrots/opa:cache
+      cache_from: docker.io/cromrots/opa:cache
+      cache_to: docker.io/cromrots/opa:cache
       password:
         from_secret: docker_pwd
       username:
@@ -53,11 +53,11 @@ steps:
   - name: build
     image: docker-registry.pikube.dev:31443/drone-genuinetools-img:latest
     settings:
-      repo: cromrots/opa
+      repo: docker.io/cromrots/opa
       auto_tag: true
       build_args: GIT_TAG=${DRONE_TAG}
-      cache_from: cromrots/opa:cache
-      cache_to: cromrots/opa:cache
+      cache_from: docker.io/cromrots/opa:cache
+      cache_to: docker.io/cromrots/opa:cache
       password:
         from_secret: docker_pwd
       username:
@@ -115,6 +115,6 @@ steps:
 
 ---
 kind: signature
-hmac: 234d901dc2d4d58e51702616dbb196a1ec5cc7cd33b8f947a8a0b9c15acc56a3
+hmac: 51cdf64f85715ba5c8195a3fa06f6b5e56bb20238cbafba334193e6caf472613
 
 ...

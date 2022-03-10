@@ -28,15 +28,17 @@ RUN addgroup \
 
 FROM scratch
 
-WORKDIR /
-
 ENV UID=1000
 ENV GID=2000
 
 COPY --from=nonroot /etc/passwd /etc/passwd
 COPY --chown=$UID:$GID --from=build /opa /
 
-USER $USER
+USER $UID
+
+WORKDIR /data
+
+SHELL [ "/opa" ]
 
 ENTRYPOINT [ "/opa" ]
 

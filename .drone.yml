@@ -20,6 +20,7 @@ steps:
       tags: unstable
       cache_from: docker.io/cromrots/opa:cache
       cache_to: docker.io/cromrots/opa:cache
+      platform: linux/amd64,linux/arm64
       password:
         from_secret: docker_pwd
       username:
@@ -55,9 +56,9 @@ steps:
     settings:
       repo: docker.io/cromrots/opa
       auto_tag: true
-      build_args: GIT_TAG=${DRONE_TAG}
       cache_from: docker.io/cromrots/opa:cache
       cache_to: docker.io/cromrots/opa:cache
+      platform: linux/amd64,linux/arm64
       password:
         from_secret: docker_pwd
       username:
@@ -115,6 +116,6 @@ steps:
 
 ---
 kind: signature
-hmac: b0264946edc1ea67b2bee3a123d51b370983e1a0298243730f529ff6642a617c
+hmac: 12dea2cc7a0a71d7727acde3138ebf86a2e8e7f27f55dc6fbc42e5773f81e1b3
 
 ...

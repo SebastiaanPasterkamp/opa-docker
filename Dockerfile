@@ -1,13 +1,6 @@
-FROM golang:1.17 as build
+FROM openpolicyagent/opa:0.50.1-static as opa
 
-ENV CGO_ENABLED=0
-ENV GOBIN=/
-
-ARG GIT_TAG=v0.37.2
-
-RUN go install github.com/open-policy-agent/opa@$GIT_TAG
-
-FROM alpine AS nonroot
+FROM --platform=${BUILDPLATFORM} alpine:3.17.0 AS nonroot
 
 ENV USER=opa
 ENV UID=1000
@@ -26,13 +19,13 @@ RUN addgroup \
         -u "$UID" \
         "$USER"
 
-FROM scratch
+FROM alpine:3.17.0
 
 ENV UID=1000
 ENV GID=2000
 
 COPY --from=nonroot /etc/passwd /etc/passwd
-COPY --chown=$UID:$GID --from=build /opa /
+COPY --chown=$UID:$GID --from=opa /opa /
 
 USER $UID
 

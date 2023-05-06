@@ -20,7 +20,7 @@ steps:
       tags: unstable
       cache_from: docker.io/cromrots/opa:cache
       cache_to: docker.io/cromrots/opa:cache
-      platform: linux/amd64,linux/arm64
+      platform: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7,linux/arm/v8
       password:
         from_secret: docker_pwd
       username:
@@ -58,7 +58,7 @@ steps:
       auto_tag: true
       cache_from: docker.io/cromrots/opa:cache
       cache_to: docker.io/cromrots/opa:cache
-      platform: linux/amd64,linux/arm64
+      platform: linux/amd64,linux/arm64,linux/arm/v6,linux/arm/v7,linux/arm/v8
       password:
         from_secret: docker_pwd
       username:
@@ -116,6 +116,6 @@ steps:
 
 ---
 kind: signature
-hmac: 12dea2cc7a0a71d7727acde3138ebf86a2e8e7f27f55dc6fbc42e5773f81e1b3
+hmac: 28cacd675a140321e7ce0fb84fa0411028033625739c95ebaa08d347f8142f85
 
 ...
